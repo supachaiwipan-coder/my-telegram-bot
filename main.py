@@ -1,15 +1,15 @@
-from telegram import Update
-from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
+import os
+from telegram.ext import ApplicationBuilder, CommandHandler
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await context.bot.send_message(chat_id=update.effective_chat.id, text="บอททำงานแล้วครับพี่!")
+async def start(update, context):
+    await context.bot.send_message(chat_id=update.effective_chat.id, text="บอททำงานแล้วครับพี่! ระบบพร้อม!")
 
 if __name__ == '__main__':
-    # ใส่ Token ของพี่ตรงนี้
-    TOKEN = '8845436697:AAETQbeDqlJ9zu2zK4tNGJnuebD8gjMqN8o'
-    application = ApplicationBuilder().token(TOKEN).build()
-    
-    start_handler = CommandHandler('start', start)
-    application.add_handler(start_handler)
-    
-    application.run_polling()
+    # ตรวจสอบว่าดึง TOKEN มาจาก Render ได้จริง
+    TOKEN = os.getenv('TOKEN')
+    if not TOKEN:
+        print("Error: TOKEN ไม่พบ! กรุณาเช็ค Environment Variables ใน Render")
+    else:
+        application = ApplicationBuilder().token(TOKEN).build()
+        application.add_handler(CommandHandler('start', start))
+        application.run_polling()
